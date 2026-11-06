@@ -127,8 +127,3 @@ http://localhost:5074
 - Uses `OUTPUT INSERTED.Id` on inserts to immediately retrieve generated identity IDs.
 - Database automatically created if absent: `BagClothingPMS` on `(localdb)\MSSQLLocalDB`.
 
-### SQLite (ADO.NET)
-- Uses `Microsoft.Data.Sqlite`.
-- Stores accounts in `accounts.db`.
-- Salted SHA-256 password hashing.
-
