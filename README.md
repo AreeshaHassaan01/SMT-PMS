@@ -123,13 +123,6 @@ Open your browser and navigate to:
 http://localhost:5074
 ```
 
-### 3. Default SQLite Account
-- **Username:** `admin`
-- **Password:** `admin123`
-- *You can also create new accounts from the **Accounts (SQLite)** tab in the sidebar.*
-
----
-
 ## 🛡️ Database Implementation Details
 
 ### SQL Server (ADO.NET)
