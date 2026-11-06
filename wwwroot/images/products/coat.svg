@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="coatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="325" rx="100" ry="8" fill="#000000" opacity="0.25" filter="blur(4px)"/>
+  <path d="M 140 50 L 260 50 L 330 110 L 300 200 L 270 170 L 275 320 L 125 320 L 130 170 L 100 200 L 70 110 Z" fill="url(#coatGrad)"/>
+  <path d="M 140 50 L 180 140 L 200 110 L 220 140 L 260 50 Z" fill="#475569"/>
+  <!-- Double breasted buttons -->
+  <circle cx="180" cy="170" r="5" fill="#f59e0b"/>
+  <circle cx="220" cy="170" r="5" fill="#f59e0b"/>
+  <circle cx="180" cy="220" r="5" fill="#f59e0b"/>
+  <circle cx="220" cy="220" r="5" fill="#f59e0b"/>
+  <circle cx="180" cy="270" r="5" fill="#f59e0b"/>
+  <circle cx="220" cy="270" r="5" fill="#f59e0b"/>
+</svg>
+

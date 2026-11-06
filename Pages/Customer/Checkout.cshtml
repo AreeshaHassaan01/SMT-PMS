@@ -1,0 +1,157 @@
+@page
+@model PMS.Pages.Customer.CheckoutModel
+@{
+    ViewData["Title"] = "Checkout";
+    ViewData["BreadcrumbIcon"] = "fa-solid fa-credit-card";
+    ViewData["BreadcrumbTitle"] = "Checkout";
+    Layout = "_CustomerLayout";
+    ViewData["CartCount"] = Model.CartCount;
+}
+
+@if (!Model.CartItems.Any())
+{
+    <div class="bg-white rounded-3 shadow-sm p-5 text-center">
+        <i class="fa-solid fa-cart-shopping fa-3x text-muted mb-3 d-block"></i>
+        <h5 class="text-muted">Your cart is empty</h5>
+        <a asp-page="/Customer/Dashboard" class="btn btn-primary mt-3">
+            <i class="fa-solid fa-store me-1"></i> Start Shopping
+        </a>
+    </div>
+}
+else
+{
+<div class="row g-4">
+    <!-- Checkout Form -->
+    <div class="col-lg-7">
+        <form method="post" asp-page-handler="PlaceOrder">
+            @Html.AntiForgeryToken()
+
+            <!-- Payment Method -->
+            <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+                <h5 class="fw-bold mb-4">
+                    <i class="fa-solid fa-wallet me-2 text-primary"></i> Payment Method
+                </h5>
+                <div class="d-flex flex-column gap-3">
+                    <label class="d-flex align-items-center gap-3 p-3 border rounded-3 cursor-pointer payment-opt active" style="cursor:pointer;">
+                        <input type="radio" name="paymentMethod" value="Cash on Delivery" checked
+                               class="form-check-input mt-0" style="width:18px;height:18px;" />
+                        <div>
+                            <div class="fw-bold"><i class="fa-solid fa-money-bill-wave me-2 text-success"></i> Cash on Delivery</div>
+                            <div class="small text-muted">Pay when your order arrives at your doorstep</div>
+                        </div>
+                    </label>
+                    <label class="d-flex align-items-center gap-3 p-3 border rounded-3" style="cursor:pointer;">
+                        <input type="radio" name="paymentMethod" value="Credit Card"
+                               class="form-check-input mt-0" style="width:18px;height:18px;" />
+                        <div>
+                            <div class="fw-bold"><i class="fa-solid fa-credit-card me-2 text-primary"></i> Credit / Debit Card</div>
+                            <div class="small text-muted">Secure online payment via card</div>
+                        </div>
+                    </label>
+                    <label class="d-flex align-items-center gap-3 p-3 border rounded-3" style="cursor:pointer;">
+                        <input type="radio" name="paymentMethod" value="Bank Transfer"
+                               class="form-check-input mt-0" style="width:18px;height:18px;" />
+                        <div>
+                            <div class="fw-bold"><i class="fa-solid fa-building-columns me-2 text-info"></i> Bank Transfer</div>
+                            <div class="small text-muted">Transfer directly to our bank account</div>
+                        </div>
+                    </label>
+                    <label class="d-flex align-items-center gap-3 p-3 border rounded-3" style="cursor:pointer;">
+                        <input type="radio" name="paymentMethod" value="JazzCash / EasyPaisa"
+                               class="form-check-input mt-0" style="width:18px;height:18px;" />
+                        <div>
+                            <div class="fw-bold"><i class="fa-solid fa-mobile-screen me-2 text-warning"></i> JazzCash / EasyPaisa</div>
+                            <div class="small text-muted">Pay via mobile wallet</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Shipping Address -->
+            <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+                <h5 class="fw-bold mb-4">
+                    <i class="fa-solid fa-location-dot me-2 text-primary"></i> Shipping Address
+                </h5>
+                @if (!string.IsNullOrWhiteSpace(Model.SavedAddress))
+                {
+                    <div class="alert alert-info d-flex align-items-start gap-2 mb-3">
+                        <i class="fa-solid fa-circle-check mt-1"></i>
+                        <div>
+                            <strong>Saved address:</strong><br>
+                            <span class="small">@Model.SavedAddress</span>
+                        </div>
+                    </div>
+                }
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Street Address</label>
+                    <input type="text" name="address" value="@Model.ProfileAddress"
+                           class="form-control" placeholder="House #, Street, Area" />
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold small">City</label>
+                        <input type="text" name="city" value="@Model.ProfileCity"
+                               class="form-control" placeholder="City" />
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold small">Province</label>
+                        <input type="text" name="province" value="@Model.ProfileProvince"
+                               class="form-control" placeholder="Province / State" />
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold small">Postal Code</label>
+                        <input type="text" name="postalCode" value="@Model.ProfilePostalCode"
+                               class="form-control" placeholder="Postal Code" />
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold small">Country</label>
+                        <input type="text" name="country" value="@(Model.ProfileCountry ?? "Pakistan")"
+                               class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
+                <i class="fa-solid fa-bag-shopping me-2"></i> Place Order
+            </button>
+        </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="col-lg-5">
+        <div class="bg-white rounded-3 shadow-sm p-4 sticky-top" style="top:80px;">
+            <h5 class="fw-bold mb-4">
+                <i class="fa-solid fa-receipt me-2 text-primary"></i> Your Order
+            </h5>
+            @foreach (var item in Model.CartItems)
+            {
+                <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+                    <img src="@(item.ProductImageUrl ?? "/images/products/default-product.svg")"
+                         style="width:50px;height:50px;object-fit:contain;background:#f8f7ff;border-radius:8px;padding:4px;"
+                         alt="@item.ProductName"
+                         onerror="this.src='/images/products/default-product.svg'">
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold small">@item.ProductName</div>
+                        <div class="text-muted" style="font-size:0.78rem;">Qty: @item.Quantity</div>
+                    </div>
+                    <div class="fw-bold small">Rs. @item.Subtotal.ToString("N0")</div>
+                </div>
+            }
+            <div class="d-flex justify-content-between mb-1 small">
+                <span class="text-muted">Subtotal (@Model.CartItems.Count() items)</span>
+                <span class="fw-semibold">Rs. @Model.Subtotal.ToString("N0")</span>
+            </div>
+            <div class="d-flex justify-content-between mb-1 small">
+                <span class="text-muted">Delivery</span>
+                <span class="text-success fw-semibold">Free</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <span class="fw-bold">Total</span>
+                <span class="fw-bold fs-5 text-primary">Rs. @Model.Subtotal.ToString("N0")</span>
+            </div>
+        </div>
+    </div>
+</div>
+}
+

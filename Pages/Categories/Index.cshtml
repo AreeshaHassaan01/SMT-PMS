@@ -1,0 +1,168 @@
+@page
+@model PMS.Pages.Categories.IndexModel
+@{
+    ViewData["Title"] = "Categories";
+    ViewData["BreadcrumbIcon"] = "fa-solid fa-table-cells-large";
+    ViewData["BreadcrumbTitle"] = "Category Management";
+}
+
+<div class="row g-4">
+    <!-- Categories List -->
+    <div class="col-lg-8">
+        <div class="pms-card">
+            <div class="pms-card-header bg-white">
+                <h2 class="pms-card-title">
+                    <i class="fa-solid fa-layer-group text-primary"></i>
+                    All Categories
+                </h2>
+                <span class="badge bg-light text-dark border">@Model.Categories.Count() categories</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="pms-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th style="width: 120px;">Products</th>
+                            <th style="width: 100px; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Categories.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    No categories available. Add one using the form.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <tr>
+                                    <td class="text-muted fw-bold">#@cat.Id</td>
+                                    <td>
+                                        <span class="category-pill fs-6">@cat.Name</span>
+                                    </td>
+                                    <td class="text-secondary small">
+                                        @(string.IsNullOrWhiteSpace(cat.Description) ? "—" : cat.Description)
+                                    </td>
+                                    <td>
+                                        <a asp-page="/Index" asp-route-categoryId="@cat.Id" class="badge bg-primary text-decoration-none">
+                                            @cat.ProductCount items
+                                        </a>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <div class="action-buttons justify-content-end">
+                                            <button type="button" class="btn-action-edit btn-edit-cat" title="Edit Category"
+                                                    data-id="@cat.Id" 
+                                                    data-name="@cat.Name" 
+                                                    data-desc="@cat.Description" 
+                                                    data-order="@cat.DisplayOrder"
+                                                    data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </button>
+
+                                            <form method="post" asp-page-handler="Delete" asp-route-id="@cat.Id" class="d-inline"
+                                                  onsubmit="return confirm('Are you sure you want to delete category \'@cat.Name\'?');">
+                                                <button type="submit" class="btn-action-delete" title="Delete Category" @(cat.ProductCount > 0 ? "disabled opacity-50" : "")>
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Category Form -->
+    <div class="col-lg-4">
+        <div class="pms-card">
+            <div class="pms-card-header bg-white">
+                <h3 class="pms-card-title fs-6">
+                    <i class="fa-solid fa-plus-circle text-primary"></i>
+                    Add New Category
+                </h3>
+            </div>
+            <div class="p-4">
+                <form method="post" asp-page-handler="Create">
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.Name" class="form-label">Category Name <span class="required">*</span></label>
+                        <input asp-for="NewCategory.Name" class="form-control" placeholder="e.g. Shoes, Watches" required />
+                        <span asp-validation-for="NewCategory.Name" class="validation-error"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.Description" class="form-label">Description</label>
+                        <textarea asp-for="NewCategory.Description" class="form-control" rows="3" placeholder="Category brief details..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.DisplayOrder" class="form-label">Display Order</label>
+                        <input asp-for="NewCategory.DisplayOrder" type="number" class="form-control" value="0" />
+                    </div>
+
+                    <button type="submit" class="pms-btn pms-btn-primary w-100 justify-content-center">
+                        <i class="fa-solid fa-plus me-1"></i> Create Category
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Edit">
+                <input type="hidden" id="editCatId" name="EditCategory.Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="editCategoryModalLabel">
+                        <i class="fa-solid fa-pen-to-square text-primary me-2"></i> Edit Category
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Category Name <span class="required">*</span></label>
+                        <input type="text" id="editCatName" name="EditCategory.Name" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea id="editCatDesc" name="EditCategory.Description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Display Order</label>
+                        <input type="number" id="editCatOrder" name="EditCategory.DisplayOrder" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="pms-btn pms-btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="pms-btn pms-btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-edit-cat').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('editCatId').value = this.getAttribute('data-id');
+                document.getElementById('editCatName').value = this.getAttribute('data-name');
+                document.getElementById('editCatDesc').value = this.getAttribute('data-desc') || '';
+                document.getElementById('editCatOrder').value = this.getAttribute('data-order') || 0;
+            });
+        });
+    </script>
+}

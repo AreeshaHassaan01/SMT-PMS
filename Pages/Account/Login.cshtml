@@ -1,0 +1,95 @@
+@page
+@model PMS.Pages.Account.LoginModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Login";
+}
+
+<div class="auth-card">
+    <h2 class="auth-title">Welcome back</h2>
+    <p class="auth-subtitle">Enter your details to access your account</p>
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger py-2 px-3 small rounded-3 mb-3" style="background-color: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5;">
+            <div asp-validation-summary="All"></div>
+        </div>
+    }
+
+    <form method="post">
+        <!-- Email Address -->
+        <div class="mb-3">
+            <div class="auth-label">
+                <span>Email Address</span>
+            </div>
+            <div class="auth-input-group">
+                <span class="auth-input-icon">
+                    <i class="fa-regular fa-envelope"></i>
+                </span>
+                <input asp-for="Email" type="text" class="auth-input" placeholder="sciphar@etflin.com" autofocus />
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            <div class="auth-label">
+                <span>Password</span>
+                <a href="javascript:void(0)" onclick="alert('Please contact your administrator or enter your secret code.');">Forgot?</a>
+            </div>
+            <div class="auth-input-group">
+                <span class="auth-input-icon">
+                    <i class="fa-solid fa-lock"></i>
+                </span>
+                <input asp-for="Password" type="password" id="loginPassword" class="auth-input" placeholder="••••••••••••" />
+                <button type="button" class="auth-toggle-pwd" onclick="togglePasswordVisibility('loginPassword', this)" title="Show/Hide Password">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SECRET-CODE Box -->
+        <div class="mb-3">
+            <div class="auth-label">
+                <span class="text-warning fw-bold">
+                    <i class="fa-solid fa-key me-1"></i> SECRET-CODE:
+                </span>
+            </div>
+            <div class="auth-input-group secret-code-group">
+                <span class="auth-input-icon text-warning">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </span>
+                <input asp-for="SecretCode" type="password" class="auth-input" autocomplete="off" />
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="auth-btn-submit">
+            <span>Sign In</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <!-- Footer Link to Register -->
+        <div class="auth-footer-link">
+            <span>Don't have an account?</span>
+            <a asp-page="/Account/Register">Create one</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+}

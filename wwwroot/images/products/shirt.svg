@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="shGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <filter id="shShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <ellipse cx="200" cy="315" rx="100" ry="8" fill="#000000" opacity="0.2" filter="blur(4px)"/>
+  <path d="M 140 60 L 260 60 L 320 120 L 280 160 L 255 140 L 255 300 L 145 300 L 145 140 L 120 160 L 80 120 Z" 
+        fill="url(#shGrad)" filter="url(#shShadow)"/>
+  <!-- Collar -->
+  <path d="M 140 60 L 180 110 L 200 95 L 220 110 L 260 60 Z" fill="#e2e8f0"/>
+  <!-- Placket -->
+  <rect x="193" y="95" width="14" height="205" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <!-- Buttons -->
+  <circle cx="200" cy="125" r="3" fill="#3b82f6"/>
+  <circle cx="200" cy="165" r="3" fill="#3b82f6"/>
+  <circle cx="200" cy="205" r="3" fill="#3b82f6"/>
+  <circle cx="200" cy="245" r="3" fill="#3b82f6"/>
+  <circle cx="200" cy="285" r="3" fill="#3b82f6"/>
+</svg>
+

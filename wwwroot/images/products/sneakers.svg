@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="snkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="50%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <filter id="snkShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <ellipse cx="200" cy="305" rx="140" ry="10" fill="#000000" opacity="0.25" filter="blur(5px)"/>
+  <!-- Sole -->
+  <path d="M 70 270 Q 200 270 330 250 C 330 275, 320 295, 290 295 L 90 295 C 75 295, 65 285, 70 270 Z" fill="#ffffff" filter="url(#snkShadow)"/>
+  <rect x="80" y="285" width="220" height="4" fill="#3b82f6"/>
+  <!-- Upper Shoe Body -->
+  <path d="M 80 270 C 80 220, 120 180, 160 170 L 220 170 L 270 230 L 325 250 L 320 270 Z" fill="url(#snkGrad)"/>
+  <path d="M 170 175 L 215 220" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+  <path d="M 185 175 L 230 220" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+</svg>
+

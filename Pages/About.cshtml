@@ -1,0 +1,155 @@
+@page
+@model PMS.Pages.AboutModel
+@{
+    ViewData["Title"] = "About & Architecture";
+    ViewData["BreadcrumbIcon"] = "fa-solid fa-circle-info";
+    ViewData["BreadcrumbTitle"] = "About PMS & System Architecture";
+}
+
+<div class="row g-4">
+    <!-- Key Features & Overview -->
+    <div class="col-lg-7">
+        <div class="pms-card mb-4">
+            <div class="pms-card-header bg-white">
+                <h2 class="pms-card-title">
+                    <i class="fa-solid fa-circle-check text-success"></i>
+                    Key Features
+                </h2>
+            </div>
+            <div class="p-4">
+                <ul class="list-unstyled d-flex flex-column gap-3 mb-0 fs-6">
+                    <li class="d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                        <span><strong>Add, Edit, View &amp; Delete Products:</strong> Full CRUD capability for products with live image preview and instant calculations.</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                        <span><strong>Razor Pages with Clean Architecture:</strong> Cleanly structured separation of Models, Data access, Repositories, and Razor Page UI models.</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                        <span><strong>Repository Pattern (ADO.NET):</strong> Direct, high-performance database interactions via <code>SqlCommand</code>, <code>SqlDataReader</code>, and parameterized queries.</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                        <span><strong>SQL Server Database:</strong> Production-ready relational storage for products, categories, and user accounts on SQL Server.</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                        <span><strong>Basic &amp; Robust Validation:</strong> Data annotations, client-side validation, and server-side safety prevent empty or invalid entries.</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                        <span><strong>Tailored Bag &amp; Clothing UI:</strong> Custom design faithfully reproducing the store theme, dark purple side navigation, and responsive cards.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- System Architecture Card -->
+        <div class="pms-card">
+            <div class="pms-card-header bg-white">
+                <h3 class="pms-card-title fs-6">
+                    <i class="fa-solid fa-sitemap text-primary"></i>
+                    Clean Architecture &amp; Folder Organization
+                </h3>
+            </div>
+            <div class="p-4">
+                <pre class="bg-light p-3 rounded text-dark small" style="line-height: 1.6;">
+PMS/
+├── Data/
+│   ├── ISqlConnectionFactory.cs      &lt;-- ADO.NET SQL Server connection provider
+│   ├── SqlConnectionFactory.cs
+│   └── DbInitializer.cs              &lt;-- Auto database setup &amp; seed data
+├── Models/
+│   ├── Product.cs                    &lt;-- Product entity with validation
+│   ├── Category.cs                   &lt;-- Category entity with display order
+│   ├── UserAccount.cs                &lt;-- User account model
+│   └── DashboardStats.cs             &lt;-- Aggregated metric indicators
+├── Repositories/
+│   ├── IProductRepository.cs         &lt;-- Product repository contract
+│   ├── ProductRepository.cs          &lt;-- Pure ADO.NET SqlCommand &amp; reader
+│   ├── ICategoryRepository.cs        &lt;-- Category repository contract
+│   ├── CategoryRepository.cs         &lt;-- Category ADO.NET data access
+│   ├── IAccountRepository.cs         &lt;-- Account repository contract
+│   └── AccountRepository.cs          &lt;-- SQL Server ADO.NET account data access
+├── Pages/
+│   ├── Index.cshtml                  &lt;-- Dashboard &amp; Product overview
+│   ├── Products/
+│   │   ├── Index.cshtml              &lt;-- Product inventory list &amp; search
+│   │   ├── Create.cshtml             &lt;-- Add new product form
+│   │   ├── Edit.cshtml               &lt;-- Edit product with image preview
+│   │   ├── Details.cshtml            &lt;-- Detailed product view
+│   │   └── Delete.cshtml             &lt;-- Confirmation delete view
+│   ├── Categories/
+│   │   └── Index.cshtml              &lt;-- Category manager &amp; counts
+│   └── Account/
+│       ├── Login.cshtml              &lt;-- Separate sleek Sign In page
+│       └── Register.cshtml           &lt;-- Separate sleek Create Account page
+└── wwwroot/
+    ├── css/site.css                  &lt;-- Custom theme matching mockup
+    └── images/products/              &lt;-- Seed vector product illustrations
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Stack Column -->
+    <div class="col-lg-5">
+        <div class="pms-card mb-4">
+            <div class="pms-card-header bg-white">
+                <h3 class="pms-card-title fs-6">
+                    <i class="fa-solid fa-layer-group text-primary"></i>
+                    Technology Stack
+                </h3>
+            </div>
+            <div class="p-4 d-flex flex-column gap-3">
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded border">
+                    <span class="tech-badge aspnet fs-5 p-2 px-3">
+                        <i class="fa-solid fa-shapes"></i>
+                    </span>
+                    <div>
+                        <div class="fw-bold">ASP.NET Core 8</div>
+                        <small class="text-muted">Razor Pages with model binding and validation</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded border">
+                    <span class="tech-badge csharp fs-5 p-2 px-3">
+                        <i class="fa-brands fa-microsoft"></i>
+                    </span>
+                    <div>
+                        <div class="fw-bold">C# (C-Sharp)</div>
+                        <small class="text-muted">Modern async/await repository implementation</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded border">
+                    <span class="tech-badge sqlserver fs-5 p-2 px-3">
+                        <i class="fa-solid fa-database"></i>
+                    </span>
+                    <div>
+                        <div class="fw-bold">SQL Server (MSSQLLocalDB)</div>
+                        <small class="text-muted">Relational database storing products, categories &amp; accounts</small>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded border">
+                    <span class="tech-badge adonet fs-5 p-2 px-3 border">
+                        <i class="fa-solid fa-bolt text-dark"></i>
+                    </span>
+                    <div>
+                        <div class="fw-bold">ADO.NET (Pure DataReader)</div>
+                        <small class="text-muted">Zero ORM overhead, fast parameterized SQL commands</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pms-card bg-primary text-white p-4">
+            <h4 class="fw-bold mb-2 text-white">Bag &amp; Clothing Store PMS</h4>
+            <p class="small opacity-75 mb-3">Designed and built with modern ASP.NET Core Razor Pages, SQL Server, and clean ADO.NET repositories.</p>
+            <a asp-page="/Index" class="btn btn-light fw-bold">Go to Dashboard</a>
+        </div>
+    </div>
+</div>

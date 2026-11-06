@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bagLeather" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a2a2e"/>
+      <stop offset="50%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#ca8a04"/>
+      <stop offset="100%" stop-color="#854d0e"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="200" cy="315" rx="140" ry="14" fill="#000000" opacity="0.35" filter="blur(6px)"/>
+
+  <!-- Back Handle -->
+  <path d="M 150 145 C 150 65, 250 65, 250 145" fill="none" stroke="#18181b" stroke-width="14" stroke-linecap="round"/>
+  <path d="M 150 145 C 150 65, 250 65, 250 145" fill="none" stroke="#2a2a2e" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Main Bag Body -->
+  <path d="M 100 150 L 300 150 L 325 295 C 325 305, 315 310, 305 310 L 95 310 C 85 310, 75 305, 75 295 Z" 
+        fill="url(#bagLeather)" filter="url(#shadow)"/>
+
+  <!-- Side Gusset Panels -->
+  <path d="M 100 150 L 125 150 L 115 310 L 95 310 Z" fill="#121215" opacity="0.6"/>
+  <path d="M 275 150 L 300 150 L 305 310 L 285 310 Z" fill="#121215" opacity="0.6"/>
+
+  <!-- Texture & Stitching Detail -->
+  <path d="M 108 158 L 292 158 L 314 298 L 86 298 Z" fill="none" stroke="#3f3f46" stroke-width="2" stroke-dasharray="4,4"/>
+
+  <!-- Front Flap / Structured Trim -->
+  <path d="M 125 150 L 275 150 L 270 215 C 270 225, 260 230, 250 230 L 150 230 C 140 230, 130 225, 130 215 Z" fill="#222226"/>
+  <path d="M 125 150 L 275 150 L 270 215 C 270 225, 260 230, 250 230 L 150 230 C 140 230, 130 225, 130 215 Z" fill="none" stroke="#3f3f46" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+  <!-- Front Gold Turn-Lock Buckle -->
+  <rect x="184" y="212" width="32" height="24" rx="4" fill="url(#gold)" filter="url(#shadow)"/>
+  <ellipse cx="200" cy="224" rx="5" ry="8" fill="#451a03"/>
+  <rect x="198" y="220" width="4" height="8" rx="1" fill="url(#gold)"/>
+
+  <!-- Front Handle Attachment Hardware Rings -->
+  <rect x="142" y="142" width="16" height="12" rx="3" fill="url(#gold)"/>
+  <rect x="242" y="142" width="16" height="12" rx="3" fill="url(#gold)"/>
+
+  <!-- Front Handle -->
+  <path d="M 150 145 C 150 75, 250 75, 250 145" fill="none" stroke="#27272a" stroke-width="14" stroke-linecap="round"/>
+  <path d="M 150 145 C 150 75, 250 75, 250 145" fill="none" stroke="#3f3f46" stroke-width="6" stroke-linecap="round"/>
+  <path d="M 150 145 C 150 75, 250 75, 250 145" fill="none" stroke="#18181b" stroke-width="2"/>
+</svg>
+

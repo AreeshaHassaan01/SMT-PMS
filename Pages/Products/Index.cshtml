@@ -1,0 +1,160 @@
+@page
+@model PMS.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = "Products";
+    ViewData["BreadcrumbIcon"] = "fa-solid fa-box-open";
+    ViewData["BreadcrumbTitle"] = "Products Catalog";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Product Inventory</h2>
+        <p class="text-muted mb-0">View, search, edit, and organize all bag and clothing items</p>
+    </div>
+    @if (!User.IsInRole("Customer"))
+    {
+        <a asp-page="/Products/Create" class="pms-btn pms-btn-primary">
+            <i class="fa-solid fa-plus"></i> Add New Product
+        </a>
+    }
+    else
+    {
+        <span class="badge bg-light text-muted border py-2 px-3">
+            <i class="fa-solid fa-eye me-1 text-info"></i> Customer Catalog View
+        </span>
+    }
+</div>
+
+<div class="pms-card">
+    <div class="p-3 bg-light border-bottom">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                    </span>
+                    <input type="text" asp-for="SearchTerm" class="form-control border-start-0" placeholder="Search by name or description..." />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select asp-for="CategoryId" class="form-select">
+                    <option value="">All Categories</option>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <option value="@cat.Id">@cat.Name (@cat.ProductCount)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="pms-btn pms-btn-primary flex-grow-1 justify-content-center">
+                    <i class="fa-solid fa-filter"></i> Apply Filter
+                </button>
+                @if (!string.IsNullOrEmpty(Model.SearchTerm) || Model.CategoryId.HasValue)
+                {
+                    <a asp-page="/Products/Index" class="pms-btn pms-btn-secondary" title="Reset">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table class="pms-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th style="width: 80px;">Image</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Price (PKR)</th>
+                    <th>Stock Status</th>
+                    <th style="width: 150px; text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Products.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-box-open fs-1 d-block mb-3 text-secondary opacity-50"></i>
+                            <div class="fw-semibold">No products found</div>
+                            <small>No items match your criteria.</small>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    int idx = 1;
+                    @foreach (var item in Model.Products)
+                    {
+                        <tr>
+                            <td class="text-muted fw-bold">@idx</td>
+                            <td>
+                                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/products/default-product.svg" : item.ImageUrl)" 
+                                     alt="@item.Name" 
+                                     class="product-thumb" 
+                                     onerror="this.src='/images/products/default-product.svg';" />
+                            </td>
+                            <td>
+                                <a asp-page="/Products/Details" asp-route-id="@item.Id" class="text-decoration-none fw-bold text-dark">
+                                    @item.Name
+                                </a>
+                                @if (!string.IsNullOrWhiteSpace(item.Description))
+                                {
+                                    <div class="text-muted small text-truncate" style="max-width: 320px;">
+                                        @item.Description
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <span class="category-pill">@(item.CategoryName ?? "General")</span>
+                            </td>
+                            <td class="fw-bold">
+                                Rs. @item.Price.ToString("N0")
+                            </td>
+                            <td>
+                                @if (item.Stock == 0)
+                                {
+                                    <span class="stock-badge stock-out">
+                                        <i class="fa-solid fa-circle-xmark me-1"></i> Out of Stock
+                                    </span>
+                                }
+                                else if (item.Stock <= 5)
+                                {
+                                    <span class="stock-badge stock-low">
+                                        <i class="fa-solid fa-triangle-exclamation me-1"></i> @item.Stock (Low)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="stock-badge stock-in">
+                                        <i class="fa-solid fa-circle-check me-1"></i> @item.Stock in Stock
+                                    </span>
+                                }
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="action-buttons justify-content-end">
+                                    <a asp-page="/Products/Details" asp-route-id="@item.Id" class="btn-action-view" title="Details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    @if (!User.IsInRole("Customer"))
+                                    {
+                                        <a asp-page="/Products/Edit" asp-route-id="@item.Id" class="btn-action-edit" title="Edit">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </a>
+                                        <a asp-page="/Products/Delete" asp-route-id="@item.Id" class="btn-action-delete" title="Delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        idx++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

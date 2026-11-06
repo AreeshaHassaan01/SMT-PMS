@@ -1,0 +1,218 @@
+@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bag & Clothing Store</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        .customer-layout { display: flex; min-height: 100vh; }
+        .customer-sidebar {
+            width: 220px; min-width: 220px; background: #1c1a3e; color: #fff;
+            display: flex; flex-direction: column; padding: 0;
+            position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
+        }
+        .customer-sidebar .sidebar-brand {
+            padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .customer-sidebar .sidebar-brand i { font-size: 22px; color: #a78bfa; }
+        .customer-sidebar .sidebar-brand span { font-size: 0.95rem; font-weight: 700; line-height: 1.3; }
+        .customer-sidebar .sidebar-role-badge {
+            margin: 10px 16px 6px; background: rgba(99,102,241,0.18); border-radius: 8px;
+            padding: 6px 12px; font-size: 0.72rem; color: #a78bfa; font-weight: 600; text-align: center;
+        }
+        .customer-sidebar nav { flex: 1; padding: 8px 0; }
+        .customer-sidebar nav a {
+            display: flex; align-items: center; gap: 12px; padding: 11px 20px;
+            color: rgba(255,255,255,0.72); text-decoration: none; font-size: 0.88rem;
+            font-weight: 500; transition: all 0.18s;
+        }
+        .customer-sidebar nav a:hover, .customer-sidebar nav a.active {
+            background: rgba(255,255,255,0.08); color: #fff;
+        }
+        .customer-sidebar nav a.active { border-left: 3px solid #a78bfa; color: #a78bfa; }
+        .customer-sidebar nav a i { width: 20px; text-align: center; font-size: 1rem; }
+        .customer-sidebar .sidebar-logout {
+            padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .customer-sidebar .sidebar-logout a {
+            display: flex; align-items: center; gap: 10px; color: #f87171;
+            text-decoration: none; font-size: 0.88rem; font-weight: 500;
+            padding: 8px 12px; border-radius: 8px; transition: background 0.18s;
+        }
+        .customer-sidebar .sidebar-logout a:hover { background: rgba(239,68,68,0.12); }
+        .customer-main { margin-left: 220px; flex: 1; display: flex; flex-direction: column; }
+        .customer-topbar {
+            background: #15142b; color: #fff; padding: 0 28px;
+            height: 58px; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .customer-topbar .page-title { font-size: 1rem; font-weight: 600; }
+        .customer-body { padding: 28px; background: #f1f4f9; min-height: calc(100vh - 58px); }
+        .cart-badge {
+            background: #ef4444; color: #fff; border-radius: 50%;
+            font-size: 0.65rem; font-weight: 700; padding: 1px 5px;
+            vertical-align: super; margin-left: 2px;
+        }
+        /* Customer product cards */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .product-card-cust {
+            background: #fff; border-radius: 14px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07); transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card-cust:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.11); }
+        .product-card-cust .card-img { background: #f8f7ff; height: 170px; display: flex; align-items: center; justify-content: center; }
+        .product-card-cust .card-img img { max-height: 140px; max-width: 100%; object-fit: contain; }
+        .product-card-cust .card-body { padding: 14px 16px; }
+        .product-card-cust .product-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 4px; color: #1e293b; }
+        .product-card-cust .product-category { font-size: 0.75rem; color: #64748b; margin-bottom: 8px; }
+        .product-card-cust .product-price { font-size: 1.05rem; font-weight: 800; color: #5d54e0; }
+        .product-card-cust .product-stock { font-size: 0.72rem; color: #64748b; margin-bottom: 10px; }
+        .qty-input-group { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+        .qty-input-group .qty-btn {
+            width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid #e2e8f0;
+            background: #f8fafc; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; font-size: 1rem; color: #64748b; transition: all 0.15s;
+        }
+        .qty-input-group .qty-btn:hover { background: #5d54e0; border-color: #5d54e0; color: #fff; }
+        .qty-input-group input { width: 42px; text-align: center; border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 2px 4px; font-size: 0.88rem; }
+        .btn-add-cart { width: 100%; background: #5d54e0; color: #fff; border: none; border-radius: 8px; padding: 8px; font-weight: 600; font-size: 0.84rem; cursor: pointer; transition: background 0.18s; }
+        .btn-add-cart:hover { background: #4a41d4; }
+        /* Cart table */
+        .cart-table th { background: #f8f7ff; font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; }
+        .cart-item-img { width: 56px; height: 56px; object-fit: contain; background: #f8f7ff; border-radius: 8px; padding: 4px; }
+        /* Order status badges */
+        .badge-pending { background: #fef3c7; color: #d97706; }
+        .badge-processing { background: #dbeafe; color: #2563eb; }
+        .badge-shipped { background: #ede9fe; color: #7c3aed; }
+        .badge-delivered { background: #d1fae5; color: #059669; }
+        .badge-cancelled { background: #fee2e2; color: #dc2626; }
+        .status-badge { padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+    </style>
+</head>
+<body>
+<div class="customer-layout">
+    <!-- Sidebar -->
+    <aside class="customer-sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Bag &amp; Clothing<br>Store</span>
+        </div>
+        <div class="sidebar-role-badge">
+            <i class="fa-solid fa-user me-1"></i> Customer Account
+        </div>
+        <nav>
+            @{
+                var page = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+            }
+            <a asp-page="/Customer/Dashboard" class="@(page == "/Customer/Dashboard" ? "active" : "")">
+                <i class="fa-solid fa-store"></i> <span>Shop / Browse</span>
+            </a>
+            <a asp-page="/Customer/Cart" class="@(page == "/Customer/Cart" ? "active" : "")">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>My Cart</span>
+                @if (ViewData["CartCount"] is int cc && cc > 0)
+                {
+                    <span class="cart-badge">@cc</span>
+                }
+            </a>
+            <a asp-page="/Customer/Orders" class="@(page == "/Customer/Orders" ? "active" : "")">
+                <i class="fa-solid fa-box-open"></i> <span>My Orders</span>
+            </a>
+            <a asp-page="/Customer/Profile" class="@(page == "/Customer/Profile" ? "active" : "")">
+                <i class="fa-solid fa-user-circle"></i> <span>My Profile</span>
+            </a>
+        </nav>
+        <div class="sidebar-logout">
+            <a asp-page="/Account/Logout" onclick="return confirm('Log out?');">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main area -->
+    <div class="customer-main">
+        <!-- Top bar -->
+        <div class="customer-topbar">
+            <div class="page-title">
+                @if (ViewData["BreadcrumbIcon"] != null)
+                {
+                    <i class="@ViewData["BreadcrumbIcon"] me-2"></i>
+                }
+                @(ViewData["BreadcrumbTitle"] ?? ViewData["Title"] ?? "Store")
+            </div>
+            <div class="dropdown">
+                <a href="#" class="user-profile-btn dropdown-toggle text-decoration-none d-flex align-items-center gap-2"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="user-avatar-circle bg-info text-white">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <span class="user-name-text">@(User.Identity?.Name ?? "Customer")</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li>
+                        <div class="px-3 py-2 border-bottom">
+                            <div class="fw-bold text-dark">@(User.Identity?.Name ?? "Customer")</div>
+                            <span class="badge bg-secondary text-white mt-1">
+                                <i class="fa-solid fa-basket-shopping me-1"></i> Customer
+                            </span>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item py-2" asp-page="/Customer/Profile">
+                            <i class="fa-solid fa-user-pen me-2 text-info"></i> My Profile
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item py-2 text-danger" asp-page="/Account/Logout">
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Log Out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="customer-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center mb-4 shadow-sm" role="alert">
+                    <i class="fa-solid fa-circle-check fs-5 me-2"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center mb-4 shadow-sm" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation fs-5 me-2"></i>
+                    <div>@TempData["ErrorMessage"]</div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

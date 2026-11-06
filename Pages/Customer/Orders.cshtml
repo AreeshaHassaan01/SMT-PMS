@@ -1,0 +1,87 @@
+@page
+@model PMS.Pages.Customer.OrdersModel
+@{
+    ViewData["Title"] = "My Orders";
+    ViewData["BreadcrumbIcon"] = "fa-solid fa-box-open";
+    ViewData["BreadcrumbTitle"] = "Order History";
+    Layout = "_CustomerLayout";
+    ViewData["CartCount"] = Model.CartCount;
+}
+
+<div class="bg-white rounded-3 shadow-sm p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h5 class="fw-bold mb-0">
+            <i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> My Orders
+        </h5>
+        <span class="badge bg-primary">@Model.Orders.Count() order@(Model.Orders.Count() == 1 ? "" : "s")</span>
+    </div>
+
+    @if (!Model.Orders.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fa-solid fa-box-open fa-3x text-muted mb-3 d-block"></i>
+            <h5 class="text-muted">No orders yet</h5>
+            <p class="text-muted small">You haven't placed any orders yet. Discover our bags and clothing catalog!</p>
+            <a asp-page="/Customer/Dashboard" class="btn btn-primary mt-2">
+                <i class="fa-solid fa-store me-1"></i> Start Shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var order in Model.Orders)
+            {
+                <div class="border rounded-3 p-3 p-md-4 bg-light">
+                    <!-- Order header -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-3 border-bottom">
+                        <div>
+                            <span class="fw-bold fs-6 me-2">Order #@order.Id</span>
+                            <span class="text-muted small">Placed on @order.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy h:mm tt")</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="status-badge @order.StatusBadgeClass">
+                                @order.Status
+                            </span>
+                            <span class="fw-bold fs-6 text-primary ms-2">Rs. @order.TotalAmount.ToString("N0")</span>
+                        </div>
+                    </div>
+
+                    <!-- Meta info -->
+                    <div class="row g-2 small text-muted mb-3">
+                        <div class="col-sm-6">
+                            <i class="fa-solid fa-money-bill-wave me-1 text-success"></i>
+                            <strong>Payment:</strong> @order.PaymentMethod
+                        </div>
+                        <div class="col-sm-6">
+                            <i class="fa-solid fa-location-dot me-1 text-danger"></i>
+                            <strong>Address:</strong> @(string.IsNullOrWhiteSpace(order.ShippingAddress) ? "Standard Shipping" : order.ShippingAddress)
+                        </div>
+                    </div>
+
+                    <!-- Order items list -->
+                    <div class="bg-white rounded-2 p-3 border">
+                        <div class="text-secondary fw-semibold small mb-2">Purchased Items:</div>
+                        <div class="d-flex flex-column gap-2">
+                            @foreach (var item in order.Items)
+                            {
+                                <div class="d-flex align-items-center justify-content-between small">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="@(item.ProductImageUrl ?? "/images/products/default-product.svg")"
+                                             style="width:34px;height:34px;object-fit:contain;background:#f8f7ff;border-radius:4px;padding:2px;"
+                                             alt="@item.ProductName"
+                                             onerror="this.src='/images/products/default-product.svg'">
+                                        <span class="fw-semibold">@item.ProductName</span>
+                                        <span class="text-muted">× @item.Quantity</span>
+                                    </div>
+                                    <span class="fw-semibold">Rs. @item.Subtotal.ToString("N0")</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

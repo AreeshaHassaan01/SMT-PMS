@@ -1,0 +1,121 @@
+@page
+@model PMS.Pages.Customer.DashboardModel
+@{
+    ViewData["Title"] = "Shop";
+    ViewData["BreadcrumbIcon"] = "fa-solid fa-store";
+    ViewData["BreadcrumbTitle"] = "Browse Products";
+    Layout = "_CustomerLayout";
+    ViewData["CartCount"] = Model.CartCount;
+}
+
+<div class="d-flex flex-column gap-4">
+    <!-- Search & Filter bar -->
+    <div class="bg-white rounded-3 shadow-sm p-3 d-flex flex-wrap gap-3 align-items-center">
+        <form method="get" class="d-flex gap-2 flex-wrap flex-grow-1">
+            <div class="input-group" style="max-width:300px;">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="fa-solid fa-search text-muted"></i>
+                </span>
+                <input type="text" name="search" value="@Model.Search" class="form-control border-start-0"
+                       placeholder="Search products...">
+            </div>
+            <select name="categoryId" class="form-select" style="max-width:180px;" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                @foreach (var cat in Model.Categories)
+                {
+                    <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">@cat.Name</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="fa-solid fa-filter me-1"></i> Filter
+            </button>
+            @if (!string.IsNullOrEmpty(Model.Search) || Model.CategoryId.HasValue)
+            {
+                <a asp-page="/Customer/Dashboard" class="btn btn-outline-secondary">Clear</a>
+            }
+        </form>
+        <div class="text-muted small">
+            <i class="fa-solid fa-box-open me-1"></i>
+            @Model.Products.Count() product@(Model.Products.Count() == 1 ? "" : "s") found
+        </div>
+    </div>
+
+    <!-- Product grid -->
+    @if (!Model.Products.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fa-solid fa-box-open fa-3x text-muted mb-3 d-block"></i>
+            <h5 class="text-muted">No products found</h5>
+            <p class="text-muted">Try adjusting your search or filter.</p>
+        </div>
+    }
+    else
+    {
+        <div class="product-grid">
+            @foreach (var product in Model.Products)
+            {
+                <div class="product-card-cust">
+                    <div class="card-img">
+                        <img src="@(product.ImageUrl ?? "/images/products/default-product.svg")"
+                             alt="@product.Name"
+                             onerror="this.src='/images/products/default-product.svg'">
+                    </div>
+                    <div class="card-body">
+                        <div class="product-name">@product.Name</div>
+                        <div class="product-category">
+                            <i class="fa-solid fa-tag me-1"></i>@product.CategoryName
+                        </div>
+                        <div class="product-price mb-1">Rs. @product.Price.ToString("N0")</div>
+                        @if (product.Stock == 0)
+                        {
+                            <div class="product-stock text-danger">
+                                <i class="fa-solid fa-xmark-circle me-1"></i> Out of Stock
+                            </div>
+                            <button class="btn-add-cart" disabled style="opacity:0.5;cursor:not-allowed;">
+                                Out of Stock
+                            </button>
+                        }
+                        else
+                        {
+                            <div class="product-stock">
+                                <i class="fa-solid fa-circle-check text-success me-1"></i>
+                                @product.Stock in stock
+                            </div>
+                            <form method="post" asp-page-handler="AddToCart">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <div class="qty-input-group mb-2">
+                                    <button type="button" class="qty-btn" onclick="adjustQty(this,-1)">
+                                        <i class="fa-solid fa-minus" style="font-size:0.65rem;"></i>
+                                    </button>
+                                    <input type="number" name="quantity" value="1" min="1" max="@product.Stock"
+                                           class="form-control p-0 text-center" style="width:42px;height:28px;font-size:0.85rem;border-radius:6px;" />
+                                    <button type="button" class="qty-btn" onclick="adjustQty(this,1)">
+                                        <i class="fa-solid fa-plus" style="font-size:0.65rem;"></i>
+                                    </button>
+                                </div>
+                                <button type="submit" class="btn-add-cart">
+                                    <i class="fa-solid fa-cart-plus me-1"></i> Add to Cart
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+function adjustQty(btn, delta) {
+    var group = btn.closest('.qty-input-group');
+    var inp = group.querySelector('input[type="number"]');
+    var val = parseInt(inp.value) || 1;
+    var max = parseInt(inp.max) || 999;
+    val = Math.max(1, Math.min(max, val + delta));
+    inp.value = val;
+}
+</script>
+}
+

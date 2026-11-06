@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="defGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="#f1f5f9" rx="16"/>
+  <!-- Bag Icon Placeholder -->
+  <path d="M 160 140 C 160 100, 240 100, 240 140" fill="none" stroke="url(#defGrad)" stroke-width="8" stroke-linecap="round"/>
+  <rect x="140" y="140" width="120" height="110" rx="14" fill="url(#defGrad)"/>
+  <circle cx="200" cy="190" r="12" fill="#ffffff" opacity="0.8"/>
+</svg>
+
